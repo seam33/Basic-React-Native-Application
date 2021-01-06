@@ -17,12 +17,18 @@ require('./models/user')
 
 // Server
 const authRoutes = require('./routes/authRoutes')
+const requireToken = require('./middleware/requireToken')
+
 app.use(express.json());
 app.use(authRoutes)
 
 app.listen(PORT, () => {
   console.log(`Server started ${PORT}`);
 });
+
+app.get('/',requireToken, (req, res) =>{
+  res.send("Your email is "+ req.user.email)
+})
 
 // Database Connection
 mongoose
@@ -31,5 +37,5 @@ mongoose
      useCreateIndex: true, 
      useUnifiedTopology: true,
    })
-   .then(() => console.log("Successful Mongo database connection"))
+   .then(() => console.log("Mongo database connection successful"))
    .catch((err) => console.log("Mongo database connection error " + err));
